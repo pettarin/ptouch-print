@@ -472,7 +472,10 @@ size_t ptouch_get_max_width(ptouch_dev ptdev)
 
 int ptouch_sendraster(ptouch_dev ptdev, uint8_t *data, size_t len)
 {
-	uint8_t buf[64];
+	/* Must hold a full raster line (max_px/8 bytes) plus up to 4 header
+	   bytes. ptouch_send() caps a packet at 128 bytes, so this is the
+	   largest a packet can ever be. */
+	uint8_t buf[128];
 	int rc;
 
 	if (!ptdev) {
