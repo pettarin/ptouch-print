@@ -26,7 +26,8 @@
 
 struct _pt_tape_info {
 	uint8_t mm;		/* Tape width in mm */
-	uint16_t px;		/* Printing area in px */
+	uint16_t px;		/* Printing area in px at 180 dpi */
+	uint16_t px360;		/* Printing area in px at 360 dpi */
 	double margins;		/* default tape margins in mm */
 };
 

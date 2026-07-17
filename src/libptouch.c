@@ -33,16 +33,23 @@
 #define _(s) gettext(s)
 
 /* Print area width in 180 DPI pixels */
+/* The 360dpi print-area values (px360) are Brother's documented values for
+   the PT-P900 series and are NOT simply double the 180dpi ones: the 180dpi
+   figures for wide tapes are clamped by those printers' 128-pin printheads,
+   not the actual printable width. Only 36mm has been verified on hardware;
+   the others come from Brother's raster reference. 21mm has no P900 spec
+   value and keeps the doubled figure. calc_tape_px() clamps the result to
+   the printer's max_px, so printers with a narrower printhead stay safe. */
 struct _pt_tape_info tape_info[]= {
-	{ 4,  24, 0.5},	/* 3.5 mm tape */
-	{ 6,  32, 1.0},	/*  6 mm tape */
-	{ 9,  52, 1.0},	/*  9 mm tape */
-	{12,  76, 2.0},	/* 12 mm tape */
-	{18, 120, 3.0},	/* 18 mm tape */
-	{21, 124, 3.0},	/* 21 mm tape */
-	{24, 128, 3.0},	/* 24 mm tape */
-	{36, 192, 4.5},	/* 36 mm tape */
-	{ 0,   0, 0.0}	/* terminating entry */
+	{ 4,  24,  48, 0.5},	/* 3.5 mm tape */
+	{ 6,  32,  64, 1.0},	/*  6 mm tape */
+	{ 9,  52, 106, 1.0},	/*  9 mm tape */
+	{12,  76, 150, 2.0},	/* 12 mm tape */
+	{18, 120, 234, 3.0},	/* 18 mm tape */
+	{21, 124, 248, 3.0},	/* 21 mm tape (360dpi value unverified) */
+	{24, 128, 320, 3.0},	/* 24 mm tape */
+	{36, 192, 454, 4.5},	/* 36 mm tape */
+	{ 0,   0,   0, 0.0}	/* terminating entry */
 };
 
 struct _pt_dev_info ptdevs[] = {
@@ -82,6 +89,10 @@ struct _pt_dev_info ptdevs[] = {
 	{0x04f9, 0x2074, "PT-D600", 128, 180, FLAG_RASTER_PACKBITS},
 	/* PT-D600 was reported to work, but with some quirks (premature
 	   cutting of tape, printing maximum of 73mm length) */
+	{0x04f9, 0x2085, "PT-P900Wc", 560, 360, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT},
+	/* PT-P900Wc: 360dpi, 560px printhead (70 bytes/raster line). Verified
+	   printing on 36mm laminated tape. Narrower tape widths use Brother's
+	   documented 360dpi print areas (see tape_info) but are untested. */
 	{0x04f9, 0x20af, "PT-P710BT", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT},
 	{0x04f9, 0x20df, "PT-D410", 128, 180, FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC},
 	{0x04f9, 0x20e0, "PT-D460BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC},
@@ -425,11 +436,17 @@ int ptouch_calc_tape_px(ptouch_dev ptdev, const uint8_t tape_width_mm)
 			if (ptdev->devinfo->dpi == 180) {
 				tape_width_px = tape_info[i].px;
 			} else if (ptdev->devinfo->dpi == 360) {
-				tape_width_px = tape_info[i].px * 2;
+				tape_width_px = tape_info[i].px360;
 			} else {
 				fprintf(stderr, _("printer with %d dpi not supported\n"), ptdev->devinfo->dpi);
 			}
 		}
+	}
+	/* Never print wider than the physical printhead. This also keeps 360dpi
+	   printers with a narrower head (e.g. PT-9200DX, 384px) safe when the
+	   tape's printable area exceeds what they can drive. */
+	if (tape_width_px > ptdev->devinfo->max_px) {
+		tape_width_px = ptdev->devinfo->max_px;
 	}
 	return tape_width_px;
 }
