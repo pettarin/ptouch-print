@@ -89,10 +89,14 @@ struct _pt_dev_info ptdevs[] = {
 	{0x04f9, 0x2074, "PT-D600", 128, 180, FLAG_RASTER_PACKBITS},
 	/* PT-D600 was reported to work, but with some quirks (premature
 	   cutting of tape, printing maximum of 73mm length) */
-	{0x04f9, 0x2085, "PT-P900Wc", 560, 360, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT},
+	{0x04f9, 0x2085, "PT-P900Wc", 560, 360, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT, -8},
 	/* PT-P900Wc: 360dpi, 560px printhead (70 bytes/raster line). Verified
 	   printing on 36mm laminated tape. Narrower tape widths use Brother's
-	   documented 360dpi print areas (see tape_info) but are untested. */
+	   documented 360dpi print areas (see tape_info) but are untested.
+	   pin_offset = -8: the print area is centred at pin 272, not the head
+	   centre (pin 280) - a constant offset across all tape widths. See the
+	   Brother "Software Developer's Manual - Raster Command Reference,
+	   PT-P900/P900W/P950NW", section 2.3.5 "Raster line". */
 	{0x04f9, 0x20af, "PT-P710BT", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT},
 	{0x04f9, 0x20df, "PT-D410", 128, 180, FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC},
 	{0x04f9, 0x20e0, "PT-D460BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC},
@@ -175,6 +179,7 @@ int ptouch_open(ptouch_dev *ptdev)
 				(*ptdev)->devinfo->dpi=ptdevs[k].dpi;
 				(*ptdev)->devinfo->max_px=ptdevs[k].max_px;
 				(*ptdev)->devinfo->flags=ptdevs[k].flags;
+				(*ptdev)->devinfo->pin_offset=ptdevs[k].pin_offset;
 				return 0;
 			}
 		}

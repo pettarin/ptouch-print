@@ -186,7 +186,13 @@ int print_img(ptouch_dev ptdev, gdImage *im, int chain, int precut)
 		return -1;
 	}
 	printf(_("image size (%ipx x %ipx)\n"), gdImageSX(im), gdImageSY(im));
-	int offset = ((int)max_pixels / 2) - (gdImageSY(im)/2);	/* always print centered */
+	int offset = ((int)max_pixels / 2) - (gdImageSY(im)/2);	/* center within the printhead */
+	/* Some models do not center the print area on the printhead. pin_offset
+	   is a fixed per-device shift (in pins/px, constant across tape widths)
+	   that corrects for this; it is 0 where centering is already correct.
+	   See the Brother "Software Developer's Manual - Raster Command
+	   Reference, PT-P900/P900W/P950NW", section 2.3.5 "Raster line". */
+	offset += ptdev->devinfo->pin_offset;
 	printf("max_pixels=%ld, offset=%d\n", max_pixels, offset);
 	if ((ptdev->devinfo->flags & FLAG_RASTER_PACKBITS) == FLAG_RASTER_PACKBITS) {
 		if (arguments.debug) {

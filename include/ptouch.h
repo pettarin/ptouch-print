@@ -57,6 +57,11 @@ struct _pt_dev_info {
 	int dpi;		/* Dots per inch of the printhead */
 	//size_t bytes_per_line;
 	int flags;
+	/* Pins to shift the print area from the centre of the printhead.
+	   On some models the print area is not centred on the head; see the
+	   Brother "Software Developer's Manual - Raster Command Reference,
+	   PT-P900/P900W/P950NW", section 2.3.5 "Raster line". 0 = centred. */
+	int pin_offset;
 };
 typedef struct _pt_dev_info *pt_dev_info;
 
