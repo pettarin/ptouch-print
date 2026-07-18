@@ -53,40 +53,40 @@ struct _pt_tape_info tape_info[]= {
 };
 
 struct _pt_dev_info ptdevs[] = {
-	{0x04f9, 0x2001, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT},	/* 360dpi, maximum 128px, max tape width 36mm */
-	{0x04f9, 0x2002, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT},	/* reported by Christian Pauls - either 0x2001 is wrong, or this printer exists with two different IDs  */
-	{0x04f9, 0x2004, "PT-2300", 112, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT},	/* 180dpi, 112px printhead */
-	{0x04f9, 0x2007, "PT-2420PC", 128, 180, FLAG_RASTER_PACKBITS},	/* 180dpi, 128px, maximum tape width 24mm, must send TIFF compressed pixel data */
-	//{0x04f9, 0x200d, "PT-3600", 384, 360, FLAG_RASTER_PACKBITS},
-	{0x04f9, 0x2011, "PT-2450PC", 128, 180, FLAG_RASTER_PACKBITS},
-	{0x04f9, 0x2019, "PT-1950", 112, 180, FLAG_RASTER_PACKBITS},	/* 180dpi, apparently 112px printhead ?, maximum tape width 18mm - unconfirmed if it works */
-	{0x04f9, 0x201f, "PT-2700", 128, 180, FLAG_HAS_PRECUT},
-	{0x04f9, 0x202c, "PT-1230PC", 128, 180, FLAG_NONE},		/* 180dpi, supports tapes up to 12mm - I don't know how much pixels it can print! */
+	{0x04f9, 0x2001, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* 360dpi, maximum 128px, max tape width 36mm */
+	{0x04f9, 0x2002, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* reported by Christian Pauls - either 0x2001 is wrong, or this printer exists with two different IDs  */
+	{0x04f9, 0x2004, "PT-2300", 112, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* 180dpi, 112px printhead */
+	{0x04f9, 0x2007, "PT-2420PC", 128, 180, FLAG_RASTER_PACKBITS, 0},	/* 180dpi, 128px, maximum tape width 24mm, must send TIFF compressed pixel data */
+	//{0x04f9, 0x200d, "PT-3600", 384, 360, FLAG_RASTER_PACKBITS, 0},
+	{0x04f9, 0x2011, "PT-2450PC", 128, 180, FLAG_RASTER_PACKBITS, 0},
+	{0x04f9, 0x2019, "PT-1950", 112, 180, FLAG_RASTER_PACKBITS, 0},	/* 180dpi, apparently 112px printhead ?, maximum tape width 18mm - unconfirmed if it works */
+	{0x04f9, 0x201f, "PT-2700", 128, 180, FLAG_HAS_PRECUT, 0},
+	{0x04f9, 0x202c, "PT-1230PC", 128, 180, FLAG_NONE, 0},		/* 180dpi, supports tapes up to 12mm - I don't know how much pixels it can print! */
 	/* Notes about the PT-1230PC: While it is true that this printer supports
 	   max 12mm tapes, it apparently expects > 76px data - the first 32px
 	   must be blank. */
-	{0x04f9, 0x202d, "PT-2430PC", 128, 180, FLAG_NONE},		/* 180dpi, maximum 128px */
-	{0x04f9, 0x2030, "PT-1230PC (PLite Mode)", 128, 180, FLAG_PLITE},
-	{0x04f9, 0x2031, "PT-2430PC (PLite Mode)", 128, 180, FLAG_PLITE},
-	{0x04f9, 0x2041, "PT-2730", 128, 180, FLAG_NONE},		/* 180dpi, maximum 128px, max tape width 24mm - reported to work with some quirks */
+	{0x04f9, 0x202d, "PT-2430PC", 128, 180, FLAG_NONE, 0},		/* 180dpi, maximum 128px */
+	{0x04f9, 0x2030, "PT-1230PC (PLite Mode)", 128, 180, FLAG_PLITE, 0},
+	{0x04f9, 0x2031, "PT-2430PC (PLite Mode)", 128, 180, FLAG_PLITE, 0},
+	{0x04f9, 0x2041, "PT-2730", 128, 180, FLAG_NONE, 0},		/* 180dpi, maximum 128px, max tape width 24mm - reported to work with some quirks */
 	/* Notes about the PT-2730: was reported to need 48px whitespace
 	   within png-images before content is actually printed - can not check this */
-	{0x04f9, 0x205e, "PT-H500", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT},
+	{0x04f9, 0x205e, "PT-H500", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},
 	/* Note about the PT-H500: was reported by Eike with the remark that
 	   it might need some trailing padding */
-	{0x04f9, 0x205f, "PT-E500", 128, 180, FLAG_RASTER_PACKBITS},
+	{0x04f9, 0x205f, "PT-E500", 128, 180, FLAG_RASTER_PACKBITS, 0},
 	/* Note about the PT-E500: was reported by Jesse Becker with the
 	   remark that it also needs some padding (white pixels) */
-	{0x04f9, 0x2060, "PT-E550W", 128, 180, FLAG_UNSUP_RASTER},
+	{0x04f9, 0x2060, "PT-E550W", 128, 180, FLAG_UNSUP_RASTER, 0},
 	/* Note about the PT-E550W: was reported by Tim Biermann but does not
 	   work yet (only prints empty tape with FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT) */
-	{0x04f9, 0x2061, "PT-P700", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_HAS_PRECUT},
-	{0x04f9, 0x2062, "PT-P750W", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT},
-	{0x04f9, 0x2064, "PT-P700 (PLite Mode)", 128, 180, FLAG_PLITE},
-	{0x04f9, 0x2065, "PT-P750W (PLite Mode)", 128, 180, FLAG_PLITE},
-	{0x04f9, 0x2073, "PT-D450", 128, 180, FLAG_USE_INFO_CMD},
+	{0x04f9, 0x2061, "PT-P700", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_HAS_PRECUT, 0},
+	{0x04f9, 0x2062, "PT-P750W", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT, 0},
+	{0x04f9, 0x2064, "PT-P700 (PLite Mode)", 128, 180, FLAG_PLITE, 0},
+	{0x04f9, 0x2065, "PT-P750W (PLite Mode)", 128, 180, FLAG_PLITE, 0},
+	{0x04f9, 0x2073, "PT-D450", 128, 180, FLAG_USE_INFO_CMD, 0},
 	/* Notes about the PT-D450: I'm unsure if print width really is 128px */
-	{0x04f9, 0x2074, "PT-D600", 128, 180, FLAG_RASTER_PACKBITS},
+	{0x04f9, 0x2074, "PT-D600", 128, 180, FLAG_RASTER_PACKBITS, 0},
 	/* PT-D600 was reported to work, but with some quirks (premature
 	   cutting of tape, printing maximum of 73mm length) */
 	{0x04f9, 0x2085, "PT-P900Wc", 560, 360, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT, -8},
@@ -97,17 +97,17 @@ struct _pt_dev_info ptdevs[] = {
 	   centre (pin 280) - a constant offset across all tape widths. See the
 	   Brother "Software Developer's Manual - Raster Command Reference,
 	   PT-P900/P900W/P950NW", section 2.3.5 "Raster line". */
-	{0x04f9, 0x20af, "PT-P710BT", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT},
-	{0x04f9, 0x20df, "PT-D410", 128, 180, FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC},
-	{0x04f9, 0x20e0, "PT-D460BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC},
-	{0x04f9, 0x20e1, "PT-D610BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC},
+	{0x04f9, 0x20af, "PT-P710BT", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},
+	{0x04f9, 0x20df, "PT-D410", 128, 180, FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0},
+	{0x04f9, 0x20e0, "PT-D460BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0},
+	{0x04f9, 0x20e1, "PT-D610BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0},
 	/* added by Christian, PT-E310BT (aka PT-E310BTVP) requires these flags, otherwise not returning from libusb_bulk_transfer-call */
 	/* printhead 128px, 180 dpi resolution */
 	/* 3,5/6/9/12/18 mm TZe Tapes, 12mm and 18mm tested */
 	/* 5,2/9/11,2 mm HSe heat shrink tubes not tested, probably requiring extension of struct _pt_tape_info */
-	{0x04f9, 0x2201, "PT-E310BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC},
-	{0x04f9, 0x2203, "PT-E560BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC},
-	{0,0,"",0,0,0}
+	{0x04f9, 0x2201, "PT-E310BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC, 0},
+	{0x04f9, 0x2203, "PT-E560BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC, 0},
+	{0,0,"",0,0,0,0}
 };
 
 int ptouch_open(ptouch_dev *ptdev)
@@ -368,7 +368,7 @@ int ptouch_getstatus(ptouch_dev ptdev, int timeout)
 {
 	char cmd[]="\x1biS";	/* 1B 69 53 = ESC i S = Status info request */
 	uint8_t buf[32] = {};
-	int i, r, tx=0, tries=0, maxtries=timeout*10;
+	int r, tx=0, tries=0, maxtries=timeout*10;
 	struct timespec w;
 
 	if (!ptdev) {
