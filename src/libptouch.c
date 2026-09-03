@@ -55,6 +55,7 @@ struct _pt_tape_info tape_info[]= {
 struct _pt_dev_info ptdevs[] = {
 	{0x04f9, 0x2001, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* 360dpi, maximum 128px, max tape width 36mm */
 	{0x04f9, 0x2002, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* reported by Christian Pauls - either 0x2001 is wrong, or this printer exists with two different IDs  */
+	{0x04f9, 0x203c, "PT-9700PC", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT|FLAG_P700_INIT|FLAG_USE_INFO_CMD, 0},	/* 360dpi, max tape width 36mm. FLAG_P700_INIT causes printer to send a status response after rasterstart; flushed in ptouch_rasterstart(). */
 	{0x04f9, 0x2004, "PT-2300", 112, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* 180dpi, 112px printhead */
 	{0x04f9, 0x2007, "PT-2420PC", 128, 180, FLAG_RASTER_PACKBITS, 0},	/* 180dpi, 128px, maximum tape width 24mm, must send TIFF compressed pixel data */
 	//{0x04f9, 0x200d, "PT-3600", 384, 360, FLAG_RASTER_PACKBITS, 0},
@@ -315,7 +316,16 @@ int ptouch_rasterstart(ptouch_dev ptdev)
 	/* 1B 69 61 01 = switch mode (0=esc/p, 1=raster mode) */
 	char cmd2[] = "\x1b\x69\x61\x01";
 	if (ptdev->devinfo->flags & FLAG_P700_INIT) {
-		return ptouch_send(ptdev, (uint8_t *)cmd2, strlen(cmd2));
+		int r = ptouch_send(ptdev, (uint8_t *)cmd2, strlen(cmd2));
+		if (r != 0) {
+			return r;
+		}
+		/* Printer sends a status response after entering raster mode;
+		   flush it so subsequent raster writes don't block. */
+		uint8_t buf[32];
+		int tx = 0;
+		libusb_bulk_transfer(ptdev->h, 0x81, buf, sizeof(buf), &tx, 1000);
+		return 0;
 	} /* else */
 	return ptouch_send(ptdev, (uint8_t *)cmd, strlen(cmd));
 }
