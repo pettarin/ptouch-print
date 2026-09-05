@@ -108,7 +108,7 @@ static struct argp_option options[] = {
 	{ "writepng", 'w', "<file>", OPTION_ALIAS, "alias for write-png", 1},
 	{ "force-tape-width", 6, "<px>", 0, "Set tape width in pixels, use together with --writepng without a printer connected", 1},
 	{ "copies", 7, "<number>", 0, "Sets the number of identical prints", 1},
-	{ "timeout", 8, "<seconds>", 0, "Set timeout waiting for finishing previous job. Default:1, 0 means infinity", 1},
+	{ "timeout", 8, "<seconds>", 0, "Set timeout waiting for finishing previous job. Default:1, or a per-printer minimum where one is known. 0 means infinity", 1},
 
 	{ 0, 0, 0, 0, "print commands:", 2},
 	{ "image", 'i', "<file>", 0, "Print the given image which must be a 2 color (black/white) png", 2},
@@ -141,7 +141,7 @@ struct arguments arguments = {
 	.forced_tape_width = 0,
 	.save_png = NULL,
 	.verbose = 0,
-	.timeout = 1
+	.timeout = -1		/* -1 = not given; 0 is already "infinity" */
 };
 
 job_t *jobs = NULL;
@@ -750,6 +750,12 @@ int main(int argc, char *argv[])
 		}
 		if (ptouch_init(ptdev) != 0) {
 			printf(_("ptouch_init() failed\n"));
+		}
+		/* Resolve the timeout only now, because it can depend on which
+		   printer answered. An explicit --timeout always wins. */
+		if (arguments.timeout < 0) {
+			arguments.timeout = ptdev->devinfo->min_timeout > 0
+				? ptdev->devinfo->min_timeout : 1;
 		}
 		if (ptouch_getstatus(ptdev, arguments.timeout) != 0) {
 			printf(_("ptouch_getstatus() failed\n"));

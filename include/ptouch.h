@@ -62,6 +62,10 @@ struct _pt_dev_info {
 	   Brother "Software Developer's Manual - Raster Command Reference,
 	   PT-P900/P900W/P950NW", section 2.3.5 "Raster line". 0 = centred. */
 	int pin_offset;
+	/* Seconds to wait for a status response when the user did not ask for a
+	   particular --timeout. 0 means use the global default; a printer only
+	   needs an entry here if the global default is too short for it. */
+	int min_timeout;
 };
 typedef struct _pt_dev_info *pt_dev_info;
 
