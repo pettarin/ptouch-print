@@ -35,6 +35,16 @@
 
 #define _(s) gettext(s)
 
+#ifdef NEED_STRCHRNUL
+/* GNU extension. argp-standalone references it, so platforms that need
+   argp-standalone need this too. Selected by cmake/Findargp.cmake. */
+char *strchrnul(const char *s, int c)
+{
+	const char *p = strchr(s, c);
+	return (char *)(p ? p : s + strlen(s));
+}
+#endif
+
 #define MAX_LINES 4	/* this should be calculated depending on tape size */
 
 #define P_NAME "ptouch-print"
