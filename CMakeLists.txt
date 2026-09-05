@@ -32,7 +32,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	${GD_LIBRARIES}
-	${LIBUSB_LIBRARIES}
 	${LIBUSB_LINK_LIBRARIES}
 	${Intl_LIBRARIES}
 	${ARGP_LIBRARIES}
