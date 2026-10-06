@@ -34,6 +34,10 @@ Set the seconds ptouch-print is waiting for finishing a previous ptouch-print co
 Default is 1 second. 0 (zero) means wait forever.
 Useful if ptouch-print is used in a script multiple times, and the device is waiting for the user
 to use the mechanical cutter.
+.TP
+.BR \-\-serial\  \fI<serial>
+Use the printer with this USB serial number, when more than one printer is connected.
+Use \-\-list\-connected to see the serial numbers.
 
 .SS "Font selection options"
 .TP
@@ -90,6 +94,9 @@ Show info about the tape detected (like printing width etc.) and exit.
 .TP
 .BR \-\-list-supported
 List all supported printers
+.TP
+.BR \-\-list-connected
+List all connected printers with their USB serial numbers, for use with \-\-serial
 
 .SH DEFAULTS
 The default font used is 'DejaVuSans'.

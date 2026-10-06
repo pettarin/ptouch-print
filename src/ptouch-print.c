@@ -35,6 +35,16 @@
 
 #define _(s) gettext(s)
 
+#ifdef NEED_STRCHRNUL
+/* GNU extension. argp-standalone references it, so platforms that need
+   argp-standalone need this too. Selected by cmake/Findargp.cmake. */
+char *strchrnul(const char *s, int c)
+{
+	const char *p = strchr(s, c);
+	return (char *)(p ? p : s + strlen(s));
+}
+#endif
+
 #define MAX_LINES 4	/* this should be calculated depending on tape size */
 
 #define P_NAME "ptouch-print"
@@ -55,6 +65,7 @@ struct arguments {
 	char *save_png;
 	int verbose;
 	int timeout;
+	char *serial;
 };
 
 typedef enum { JOB_CUTMARK, JOB_IMAGE, JOB_PAD, JOB_TEXT, JOB_UNDEFINED } job_type_t;
@@ -98,7 +109,8 @@ static struct argp_option options[] = {
 	{ "writepng", 'w', "<file>", OPTION_ALIAS, "alias for write-png", 1},
 	{ "force-tape-width", 6, "<px>", 0, "Set tape width in pixels, use together with --writepng without a printer connected", 1},
 	{ "copies", 7, "<number>", 0, "Sets the number of identical prints", 1},
-	{ "timeout", 8, "<seconds>", 0, "Set timeout waiting for finishing previous job. Default:1, 0 means infinity", 1},
+	{ "timeout", 8, "<seconds>", 0, "Set timeout waiting for finishing previous job. Default:1, or a per-printer minimum where one is known. 0 means infinity", 1},
+	{ "serial", 12, "<serial>", 0, "Use the printer with this USB serial number", 1 },
 
 	{ 0, 0, 0, 0, "print commands:", 2},
 	{ "image", 'i', "<file>", 0, "Print the given image which must be a 2 color (black/white) png", 2},
@@ -113,6 +125,7 @@ static struct argp_option options[] = {
 	{ 0, 0, 0, 0, "other commands:", 3},
 	{ "info", 20, 0, 0, "Show info about detected tape", 3},
 	{ "list-supported", 21, 0, 0, "Show printers supported by this version", 3},
+	{ "list-connected", 22, 0, 0, "Show connected printers and their USB serial numbers (for --serial)", 3},
 	{ 0 }
 };
 
@@ -131,7 +144,8 @@ struct arguments arguments = {
 	.forced_tape_width = 0,
 	.save_png = NULL,
 	.verbose = 0,
-	.timeout = 1
+	.timeout = -1,		/* -1 = not given; 0 is already "infinity" */
+	.serial = NULL
 };
 
 job_t *jobs = NULL;
@@ -678,6 +692,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 		case 11: // precut
 			arguments->precut = true;
 			break;
+		case 12: // serial
+			arguments->serial = arg;
+			break;
 		case 'a': // align
 			if ((strcmp(arg, "c") == 0) || (strcmp(arg, "center") == 0)) {
 				arguments->align = ALIGN_CENTER;
@@ -699,6 +716,13 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 		case 21: // list-supported
 			ptouch_list_supported();
 			exit(0);
+		case 22: { // list-connected
+			int n = ptouch_list_connected();
+			if (n == 0) {
+				fprintf(stderr, _("No P-Touch printer found on USB (remember to put switch to position E)\n"));
+			}
+			exit(n > 0 ? 0 : 5);
+		}
 		case ARGP_KEY_ARG:
 			argp_failure(state, 1, E2BIG, _("No arguments supported"));
 			break;
@@ -735,11 +759,17 @@ int main(int argc, char *argv[])
 	argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
 	if (!arguments.forced_tape_width) {
-		if ((ptouch_open(&ptdev)) < 0) {
+		if ((ptouch_open_serial(&ptdev, arguments.serial)) < 0) {
 			return 5;
 		}
 		if (ptouch_init(ptdev) != 0) {
 			printf(_("ptouch_init() failed\n"));
+		}
+		/* Resolve the timeout only now, because it can depend on which
+		   printer answered. An explicit --timeout always wins. */
+		if (arguments.timeout < 0) {
+			arguments.timeout = ptdev->devinfo->min_timeout > 0
+				? ptdev->devinfo->min_timeout : 1;
 		}
 		if (ptouch_getstatus(ptdev, arguments.timeout) != 0) {
 			printf(_("ptouch_getstatus() failed\n"));

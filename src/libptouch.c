@@ -53,44 +53,44 @@ struct _pt_tape_info tape_info[]= {
 };
 
 struct _pt_dev_info ptdevs[] = {
-	{0x04f9, 0x2001, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* 360dpi, maximum 128px, max tape width 36mm */
-	{0x04f9, 0x2002, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* reported by Christian Pauls - either 0x2001 is wrong, or this printer exists with two different IDs  */
-	{0x04f9, 0x203c, "PT-9700PC", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT|FLAG_P700_INIT|FLAG_USE_INFO_CMD, 0},	/* 360dpi, max tape width 36mm. FLAG_P700_INIT causes printer to send a status response after rasterstart; flushed in ptouch_rasterstart(). */
-	{0x04f9, 0x2004, "PT-2300", 112, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},	/* 180dpi, 112px printhead */
-	{0x04f9, 0x2007, "PT-2420PC", 128, 180, FLAG_RASTER_PACKBITS, 0},	/* 180dpi, 128px, maximum tape width 24mm, must send TIFF compressed pixel data */
-	//{0x04f9, 0x200d, "PT-3600", 384, 360, FLAG_RASTER_PACKBITS, 0},
-	{0x04f9, 0x2011, "PT-2450PC", 128, 180, FLAG_RASTER_PACKBITS, 0},
-	{0x04f9, 0x2019, "PT-1950", 112, 180, FLAG_RASTER_PACKBITS, 0},	/* 180dpi, apparently 112px printhead ?, maximum tape width 18mm - unconfirmed if it works */
-	{0x04f9, 0x201f, "PT-2700", 128, 180, FLAG_HAS_PRECUT, 0},
-	{0x04f9, 0x202c, "PT-1230PC", 128, 180, FLAG_NONE, 0},		/* 180dpi, supports tapes up to 12mm - I don't know how much pixels it can print! */
+	{0x04f9, 0x2001, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0, 0},	/* 360dpi, maximum 128px, max tape width 36mm */
+	{0x04f9, 0x2002, "PT-9200DX", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0, 0},	/* reported by Christian Pauls - either 0x2001 is wrong, or this printer exists with two different IDs  */
+	{0x04f9, 0x203c, "PT-9700PC", 384, 360, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT|FLAG_P700_INIT|FLAG_USE_INFO_CMD, 0, 0},	/* 360dpi, max tape width 36mm. FLAG_P700_INIT causes printer to send a status response after rasterstart; flushed in ptouch_rasterstart(). */
+	{0x04f9, 0x2004, "PT-2300", 112, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0, 0},	/* 180dpi, 112px printhead */
+	{0x04f9, 0x2007, "PT-2420PC", 128, 180, FLAG_RASTER_PACKBITS, 0, 0},	/* 180dpi, 128px, maximum tape width 24mm, must send TIFF compressed pixel data */
+	//{0x04f9, 0x200d, "PT-3600", 384, 360, FLAG_RASTER_PACKBITS, 0, 0},
+	{0x04f9, 0x2011, "PT-2450PC", 128, 180, FLAG_RASTER_PACKBITS, 0, 0},
+	{0x04f9, 0x2019, "PT-1950", 112, 180, FLAG_RASTER_PACKBITS, 0, 0},	/* 180dpi, apparently 112px printhead ?, maximum tape width 18mm - unconfirmed if it works */
+	{0x04f9, 0x201f, "PT-2700", 128, 180, FLAG_HAS_PRECUT, 0, 0},
+	{0x04f9, 0x202c, "PT-1230PC", 128, 180, FLAG_NONE, 0, 0},		/* 180dpi, supports tapes up to 12mm - I don't know how much pixels it can print! */
 	/* Notes about the PT-1230PC: While it is true that this printer supports
 	   max 12mm tapes, it apparently expects > 76px data - the first 32px
 	   must be blank. */
-	{0x04f9, 0x202d, "PT-2430PC", 128, 180, FLAG_NONE, 0},		/* 180dpi, maximum 128px */
-	{0x04f9, 0x2030, "PT-1230PC (PLite Mode)", 128, 180, FLAG_PLITE, 0},
-	{0x04f9, 0x2031, "PT-2430PC (PLite Mode)", 128, 180, FLAG_PLITE, 0},
-	{0x04f9, 0x2041, "PT-2730", 128, 180, FLAG_NONE, 0},		/* 180dpi, maximum 128px, max tape width 24mm - reported to work with some quirks */
+	{0x04f9, 0x202d, "PT-2430PC", 128, 180, FLAG_HAS_PRECUT, 0, 0},	/* 180dpi, maximum 128px. Same head width/dpi as PT-2700 (which has FLAG_HAS_PRECUT); confirmed precut works on real hardware. */
+	{0x04f9, 0x2030, "PT-1230PC (PLite Mode)", 128, 180, FLAG_PLITE, 0, 0},
+	{0x04f9, 0x2031, "PT-2430PC (PLite Mode)", 128, 180, FLAG_PLITE, 0, 0},
+	{0x04f9, 0x2041, "PT-2730", 128, 180, FLAG_NONE, 0, 0},		/* 180dpi, maximum 128px, max tape width 24mm - reported to work with some quirks */
 	/* Notes about the PT-2730: was reported to need 48px whitespace
 	   within png-images before content is actually printed - can not check this */
-	{0x04f9, 0x205e, "PT-H500", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},
+	{0x04f9, 0x205e, "PT-H500", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0, 0},
 	/* Note about the PT-H500: was reported by Eike with the remark that
 	   it might need some trailing padding */
-	{0x04f9, 0x205f, "PT-E500", 128, 180, FLAG_RASTER_PACKBITS, 0},
+	{0x04f9, 0x205f, "PT-E500", 128, 180, FLAG_RASTER_PACKBITS, 0, 0},
 	/* Note about the PT-E500: was reported by Jesse Becker with the
 	   remark that it also needs some padding (white pixels) */
-	{0x04f9, 0x2060, "PT-E550W", 128, 180, FLAG_UNSUP_RASTER, 0},
+	{0x04f9, 0x2060, "PT-E550W", 128, 180, FLAG_UNSUP_RASTER, 0, 0},
 	/* Note about the PT-E550W: was reported by Tim Biermann but does not
 	   work yet (only prints empty tape with FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT) */
-	{0x04f9, 0x2061, "PT-P700", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_HAS_PRECUT, 0},
-	{0x04f9, 0x2062, "PT-P750W", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT, 0},
-	{0x04f9, 0x2064, "PT-P700 (PLite Mode)", 128, 180, FLAG_PLITE, 0},
-	{0x04f9, 0x2065, "PT-P750W (PLite Mode)", 128, 180, FLAG_PLITE, 0},
-	{0x04f9, 0x2073, "PT-D450", 128, 180, FLAG_USE_INFO_CMD, 0},
+	{0x04f9, 0x2061, "PT-P700", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_HAS_PRECUT, 0, 0},
+	{0x04f9, 0x2062, "PT-P750W", 128, 180, FLAG_RASTER_PACKBITS|FLAG_P700_INIT, 0, 0},
+	{0x04f9, 0x2064, "PT-P700 (PLite Mode)", 128, 180, FLAG_PLITE, 0, 0},
+	{0x04f9, 0x2065, "PT-P750W (PLite Mode)", 128, 180, FLAG_PLITE, 0, 0},
+	{0x04f9, 0x2073, "PT-D450", 128, 180, FLAG_USE_INFO_CMD, 0, 0},
 	/* Notes about the PT-D450: I'm unsure if print width really is 128px */
-	{0x04f9, 0x2074, "PT-D600", 128, 180, FLAG_RASTER_PACKBITS, 0},
+	{0x04f9, 0x2074, "PT-D600", 128, 180, FLAG_RASTER_PACKBITS, 0, 0},
 	/* PT-D600 was reported to work, but with some quirks (premature
 	   cutting of tape, printing maximum of 73mm length) */
-	{0x04f9, 0x2085, "PT-P900Wc", 560, 360, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT, -8},
+	{0x04f9, 0x2085, "PT-P900Wc", 560, 360, FLAG_RASTER_PACKBITS|FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT, -8, 0},
 	/* PT-P900Wc: 360dpi, 560px printhead (70 bytes/raster line). Verified
 	   printing on 36mm laminated tape. Narrower tape widths use Brother's
 	   documented 360dpi print areas (see tape_info) but are untested.
@@ -98,20 +98,27 @@ struct _pt_dev_info ptdevs[] = {
 	   centre (pin 280) - a constant offset across all tape widths. See the
 	   Brother "Software Developer's Manual - Raster Command Reference,
 	   PT-P900/P900W/P950NW", section 2.3.5 "Raster line". */
-	{0x04f9, 0x20af, "PT-P710BT", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0},
-	{0x04f9, 0x20df, "PT-D410", 128, 180, FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0},
-	{0x04f9, 0x20e0, "PT-D460BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0},
-	{0x04f9, 0x20e1, "PT-D610BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0},
+	{0x04f9, 0x20af, "PT-P710BT", 128, 180, FLAG_RASTER_PACKBITS|FLAG_HAS_PRECUT, 0, 0},
+	{0x04f9, 0x20df, "PT-D410", 128, 180, FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0, 0},
+	{0x04f9, 0x20e0, "PT-D460BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0, 0},
+	{0x04f9, 0x20e1, "PT-D610BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_HAS_PRECUT|FLAG_D460BT_MAGIC, 0, 0},
 	/* added by Christian, PT-E310BT (aka PT-E310BTVP) requires these flags, otherwise not returning from libusb_bulk_transfer-call */
 	/* printhead 128px, 180 dpi resolution */
 	/* 3,5/6/9/12/18 mm TZe Tapes, 12mm and 18mm tested */
 	/* 5,2/9/11,2 mm HSe heat shrink tubes not tested, probably requiring extension of struct _pt_tape_info */
-	{0x04f9, 0x2201, "PT-E310BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC, 0},
-	{0x04f9, 0x2203, "PT-E560BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC, 0},
-	{0,0,"",0,0,0,0}
+	{0x04f9, 0x2201, "PT-E310BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC, 0, 0},
+	{0x04f9, 0x2203, "PT-E560BT", 128, 180, FLAG_P700_INIT|FLAG_USE_INFO_CMD|FLAG_D460BT_MAGIC, 0, 10},
+	{0,0,"",0,0,0,0,0}
 };
 
 int ptouch_open(ptouch_dev *ptdev)
+{
+	return ptouch_open_serial(ptdev, NULL);
+}
+
+/* Like ptouch_open(), but when serial is not NULL only a printer whose
+   USB serial number matches it is used. */
+int ptouch_open_serial(ptouch_dev *ptdev, const char *serial)
 {
 	libusb_device **devs;
 	libusb_device *dev;
@@ -148,22 +155,43 @@ int ptouch_open(ptouch_dev *ptdev)
 		}
 		for (int k=0; ptdevs[k].vid > 0; ++k) {
 			if ((desc.idVendor == ptdevs[k].vid) && (desc.idProduct == ptdevs[k].pid) && (ptdevs[k].flags >= 0)) {
-				fprintf(stderr, _("%s found on USB bus %d, device %d\n"),
+				unsigned char buf[64] = {0};
+				if ((r=libusb_open(dev, &handle)) != 0) {
+					fprintf(stderr, _("libusb_open error :%s\n"), libusb_error_name(r));
+					if (serial) {
+						/* can't read its serial, so it can't be the one we want */
+						break;
+					}
+					libusb_free_device_list(devs, 1);
+					return -1;
+				}
+				if (desc.iSerialNumber) {
+					libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber, buf, sizeof(buf));
+				}
+				fprintf(stderr, _("%s found on USB bus %d, device %d, serial %s\n"),
 					ptdevs[k].name,
 					libusb_get_bus_number(dev),
-					libusb_get_device_address(dev));
+					libusb_get_device_address(dev),
+					buf[0] ? (char *)buf : "-");
+				/* check the serial before the P-Lite/unsupported checks, so
+				   a different printer in the wrong mode doesn't end the search */
+				if (serial && (strcmp((char *)buf, serial) != 0)) {
+					libusb_close(handle);
+					handle = NULL;
+					break;	/* next device */
+				}
 				if (ptdevs[k].flags & FLAG_PLITE) {
 					printf("Printer is in P-Lite Mode, which is unsupported\n\n");
 					printf("Turn off P-Lite mode by changing switch from position EL to position E\n");
 					printf("or by pressing the PLite button for ~ 2 seconds (or consult the manual)\n");
+					libusb_close(handle);
+					libusb_free_device_list(devs, 1);
 					return -1;
 				}
 				if (ptdevs[k].flags & FLAG_UNSUP_RASTER) {
 					printf("Unfortunately, that printer currently is unsupported (it has a different raster data transfer)\n");
-					return -1;
-				}
-				if ((r=libusb_open(dev, &handle)) != 0) {
-					fprintf(stderr, _("libusb_open error :%s\n"), libusb_error_name(r));
+					libusb_close(handle);
+					libusb_free_device_list(devs, 1);
 					return -1;
 				}
 				libusb_free_device_list(devs, 1);
@@ -181,11 +209,16 @@ int ptouch_open(ptouch_dev *ptdev)
 				(*ptdev)->devinfo->max_px=ptdevs[k].max_px;
 				(*ptdev)->devinfo->flags=ptdevs[k].flags;
 				(*ptdev)->devinfo->pin_offset=ptdevs[k].pin_offset;
+				(*ptdev)->devinfo->min_timeout=ptdevs[k].min_timeout;
 				return 0;
 			}
 		}
 	}
-	fprintf(stderr, _("No P-Touch printer found on USB (remember to put switch to position E)\n"));
+	if (serial) {
+		fprintf(stderr, _("No P-Touch printer with serial %s found\n"), serial);
+	} else {
+		fprintf(stderr, _("No P-Touch printer found on USB (remember to put switch to position E)\n"));
+	}
 	libusb_free_device_list(devs, 1);
 	return -1;
 }
@@ -552,6 +585,57 @@ void ptouch_list_supported()
 	}
 	printf("\n");
 	return;
+}
+
+/* Print every connected P-Touch printer with its USB serial number, which
+   can then be passed to ptouch_open_serial(). Returns the number of
+   printers found, or -1 on error. */
+int ptouch_list_connected()
+{
+	libusb_device **devs;
+	libusb_device *dev;
+	libusb_device_handle *handle;
+	struct libusb_device_descriptor desc;
+	int r, i=0, found=0;
+
+	if ((libusb_init(NULL)) < 0) {
+		fprintf(stderr, _("libusb_init() failed\n"));
+		return -1;
+	}
+	if (libusb_get_device_list(NULL, &devs) < 0) {
+		libusb_exit(NULL);
+		return -1;
+	}
+	while ((dev=devs[i++]) != NULL) {
+		if (libusb_get_device_descriptor(dev, &desc) < 0) {
+			continue;
+		}
+		for (int k=0; ptdevs[k].vid > 0; ++k) {
+			if ((desc.idVendor == ptdevs[k].vid) && (desc.idProduct == ptdevs[k].pid) && (ptdevs[k].flags >= 0)) {
+				unsigned char buf[64] = {0};
+				const char *serial = "-";
+				if ((r=libusb_open(dev, &handle)) != 0) {
+					serial = libusb_error_name(r);
+				} else {
+					if (desc.iSerialNumber && (libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber, buf, sizeof(buf)) > 0)) {
+						serial = (char *)buf;
+					}
+					libusb_close(handle);
+				}
+				printf(_("%s\tserial %s\t(USB bus %d, device %d)%s\n"),
+					ptdevs[k].name, serial,
+					libusb_get_bus_number(dev),
+					libusb_get_device_address(dev),
+					(ptdevs[k].flags & FLAG_PLITE) ? _(" - in P-Lite mode, unsupported") :
+					(ptdevs[k].flags & FLAG_UNSUP_RASTER) ? _(" - unsupported") : "");
+				++found;
+				break;
+			}
+		}
+	}
+	libusb_free_device_list(devs, 1);
+	libusb_exit(NULL);
+	return found;
 }
 
 const char* pt_mediatype(const uint8_t media_type)

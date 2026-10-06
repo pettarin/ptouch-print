@@ -62,9 +62,33 @@ if (ARGP_INCLUDE_PATH)
 
     # Check if argp_parse is available. Some implementations don't have this
     # symbol defined, thus they're not compatible.
+    #
+    # argp-standalone itself calls strchrnul(), a GNU extension that the
+    # platforms needing argp-standalone tend to lack (macOS among them). On
+    # those the plain link test fails with an undefined strchrnul and would
+    # report a perfectly good libargp as lacking argp_parse. So probe for
+    # strchrnul first and, where it is missing, run the argp_parse test with
+    # a local definition; the project then supplies the same definition.
     if (ARGP_LIBRARIES)
         set(CMAKE_REQUIRED_LIBRARIES "${ARGP_LIBRARIES}")
-        check_function_exists("argp_parse" ARGP_EXTERNAL)
+        include(CheckSymbolExists)
+        set(CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
+        check_symbol_exists("strchrnul" "string.h" HAVE_STRCHRNUL)
+        unset(CMAKE_REQUIRED_DEFINITIONS)
+        if (HAVE_STRCHRNUL)
+            check_function_exists("argp_parse" ARGP_EXTERNAL)
+        else ()
+            include(CheckCSourceCompiles)
+            check_c_source_compiles("
+                #include <string.h>
+                #include <argp.h>
+                char *strchrnul(const char *s, int c) {
+                    const char *p = strchr(s, c);
+                    return (char *)(p ? p : s + strlen(s));
+                }
+                int main(void) { return argp_parse(0, 1, (char *[]){\"x\"}, 0, 0, 0); }
+            " ARGP_EXTERNAL)
+        endif ()
         if (NOT ARGP_EXTERNAL)
             message(FATAL_ERROR "Your system ships an argp library in "
                     "${ARGP_LIBRARIES}, but it does not have a symbol "

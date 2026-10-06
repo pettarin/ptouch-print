@@ -62,6 +62,10 @@ struct _pt_dev_info {
 	   Brother "Software Developer's Manual - Raster Command Reference,
 	   PT-P900/P900W/P950NW", section 2.3.5 "Raster line". 0 = centred. */
 	int pin_offset;
+	/* Seconds to wait for a status response when the user did not ask for a
+	   particular --timeout. 0 means use the global default; a printer only
+	   needs an entry here if the global default is too short for it. */
+	int min_timeout;
 };
 typedef struct _pt_dev_info *pt_dev_info;
 
@@ -103,6 +107,7 @@ struct _ptouch_dev {
 typedef struct _ptouch_dev *ptouch_dev;
 
 int ptouch_open(ptouch_dev *ptdev);
+int ptouch_open_serial(ptouch_dev *ptdev, const char *serial);
 int ptouch_close(ptouch_dev ptdev);
 int ptouch_send(ptouch_dev ptdev, uint8_t *data, size_t len);
 int ptouch_init(ptouch_dev ptdev);
@@ -126,6 +131,7 @@ int ptouch_rasterstart(ptouch_dev ptdev);
 int ptouch_sendraster(ptouch_dev ptdev, uint8_t *data, size_t len);
 void ptouch_rawstatus(uint8_t raw[32]);
 void ptouch_list_supported();
+int ptouch_list_connected();
 
 const char* pt_mediatype(unsigned char media_type);
 const char* pt_tapecolor(unsigned char tape_color);
